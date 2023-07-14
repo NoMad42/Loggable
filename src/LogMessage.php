@@ -5,10 +5,11 @@ namespace NoMad42\Loggable;
 class LogMessage implements Loggable
 {
     public function __construct(
-        protected string             $level,
+        protected string $level,
         protected string|\Stringable $message,
-        protected array              $context,
-    ) {}
+        protected array $context,
+    ) {
+    }
 
     public function getLevel(): string
     {
