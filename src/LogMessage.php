@@ -2,6 +2,7 @@
 
 namespace NoMad42\Loggable;
 
+use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 class LogMessage implements Loggable
@@ -26,6 +27,15 @@ class LogMessage implements Loggable
     public function getContext(): array
     {
         return $this->context;
+    }
+
+    public function logByLogger(LoggerInterface $logger): void
+    {
+        $logger->log(
+            $this->getLevel(),
+            $this->getMessage(),
+            $this->getContext(),
+        );
     }
 
     public static function makeFromException(

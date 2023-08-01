@@ -54,3 +54,14 @@ it('can reassign fields value by method arguments', function () {
     expect($logMessage->getMessage())->toBe($message);
     expect($logMessage->getContext())->toBe($context);
 });
+
+it('can be logged by logger via logByLogger method', function () {
+    $logger = new NullLogger();
+    $logMessage = new LogMessage(
+        PsrLogLevel::DEBUG,
+        'Test log message',
+        ['key' => 'value'],
+    );
+
+    $logMessage->logByLogger($logger);
+})->expectNotToPerformAssertions();
