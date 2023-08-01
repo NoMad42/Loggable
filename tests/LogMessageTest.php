@@ -1,9 +1,13 @@
 <?php
 
+use NoMad42\Loggable\LogMessage;
+use Psr\Log\LogLevel as PsrLogLevel;
+use Psr\Log\NullLogger;
+
 it('can be logged in null logger', function () {
-    $logger = new \Psr\Log\NullLogger();
-    $logMessage = new \NoMad42\Loggable\LogMessage(
-        \Psr\Log\LogLevel::DEBUG,
+    $logger = new NullLogger();
+    $logMessage = new LogMessage(
+        PsrLogLevel::DEBUG,
         'Test log message',
         ['key' => 'value'],
     );
@@ -16,8 +20,8 @@ it('can be logged in null logger', function () {
 })->expectNotToPerformAssertions();
 
 it('can be made from exception', function () {
-    $logger = new \Psr\Log\NullLogger();
-    $logMessage = \NoMad42\Loggable\LogMessage::makeFromException(
+    $logger = new NullLogger();
+    $logMessage = LogMessage::makeFromException(
         new Exception('Oh no!')
     );
 
@@ -29,7 +33,7 @@ it('can be made from exception', function () {
 })->expectNotToPerformAssertions();
 
 it('can reassign fields value by method arguments', function () {
-    $level = \Psr\Log\LogLevel::CRITICAL;
+    $level = PsrLogLevel::CRITICAL;
     $message = 'Critical error!';
     $context = [
         'exception' => 'should not replace value',
@@ -37,7 +41,7 @@ it('can reassign fields value by method arguments', function () {
     ];
     $exception = new Exception('Oh no!');
 
-    $logMessage = \NoMad42\Loggable\LogMessage::makeFromException(
+    $logMessage = LogMessage::makeFromException(
         $exception,
         $level,
         $message,
