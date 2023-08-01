@@ -87,6 +87,15 @@ try {
 }
 ```
 
+### Quick
+
+```php
+$exception = new \Exception('Oh no!');
+$logger = new \Psr\Log\NullLogger();
+
+LogMessage::makeFromException($exception)->logByLogger($logger);
+```
+
 ### Etc
 
 And many other ways...

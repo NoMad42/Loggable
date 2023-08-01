@@ -65,3 +65,10 @@ it('can be logged by logger via logByLogger method', function () {
 
     $logMessage->logByLogger($logger);
 })->expectNotToPerformAssertions();
+
+it('can be logged quick', function () {
+    $exception = new Exception('Oh no!');
+    $logger = new NullLogger();
+
+    LogMessage::makeFromException($exception)->logByLogger($logger);
+})->expectNotToPerformAssertions();
