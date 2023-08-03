@@ -17,77 +17,48 @@ composer require nomad42/loggable
 
 ## Usage
 
-This package can be used in different ways.
+### Standardize the workflow with logging your exception.
 
-### With package LogMessage helper class
+Step 1.
+
+Implement interface in your exception.
 
 ```php
-$loggable = new NoMad42\Loggable\LogMessage(
-    \Psr\Log\LogLevel::ERROR,
-    'Some log message with {contextInformation}',
-    [
-        'contextInformation' => 'some context'
-    ]
-);
+class MyAppException extends Exception implements Loggable
+{
+    public function getLevel(): string
+    {
+        return LogLevel::CRITICAL;
+    }
 
-...
-
-if ($loggable instanceof \NoMad42\Loggable\Loggable) {
-    /** @var \Psr\Log\LoggerInterface $logger */
-    $logger->log(
-        $loggable->getLevel(),
-        $loggable->getMessage(),
-        $loggable->getContext(),
-    );
+    public function getContext(): array
+    {
+        return ['exception' => $this];
+    }
 }
 ```
 
-### With your app exception variant
+Step 2.
+
+At your error handler add one extra catch block.
 
 ```php
-class MyAppException extends Exception implements \NoMad42\Loggable\Loggable
-{
-    public function getLevel() : string
-    {
-        return \Psr\Log\LogLevel::CRITICAL;
-    }
-    
-    public function getMessage() : string|\Stringable
-    {
-        return 'Critical error in my app'
-    }
-    
-    public function getContext() : array
-    {
-        return [
-            'exception' => $this;
-        ]
-    }
-}
+$logger = new NullLogger();
 
-...
-
-/** @var \Psr\Log\LoggerInterface $logger */
 try {
-    // some code
-} catch (MyAppException $exception) {
+    throw new MyAppException('Oh no!');
+} catch (Loggable $exception) { // <- this block; yes, it can be caught 
     $logger->log(
         $exception->getLevel(),
         $exception->getMessage(),
         $exception->getContext(),
-    );
-} catch (\NoMad42\Loggable\Loggable $loggable) {
-    $logger->log(
-        $loggable->getLevel(),
-        $loggable->getMessage(),
-        $loggable->getContext(),
     );
 } catch (Exception $exception) {
     $logger->error('Oh no!', ['exception' => $exception]);
 }
 ```
 
-### Quick
+### Wrap existing exception and log it immediately
 
 ```php
 $exception = new \Exception('Oh no!');
@@ -96,9 +67,15 @@ $logger = new \Psr\Log\NullLogger();
 LogMessage::makeFromException($exception)->logByLogger($logger);
 ```
 
-### Etc
+### Log some data in easy way
 
-And many other ways...
+```php
+(new LogMessage(
+    PsrLogLevel::INFO,
+    'Cron task end successfully',
+    ['metrics' => $metrics],
+))->logByLogger($logger);
+```
 
 ## Testing
 

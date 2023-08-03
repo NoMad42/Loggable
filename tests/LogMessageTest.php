@@ -66,9 +66,20 @@ it('can be logged by logger via logByLogger method', function () {
     $logMessage->logByLogger($logger);
 })->expectNotToPerformAssertions();
 
-it('can be logged quick', function () {
+it('can wrap existing exception and log it immediately', function () {
     $exception = new Exception('Oh no!');
     $logger = new NullLogger();
 
     LogMessage::makeFromException($exception)->logByLogger($logger);
+})->expectNotToPerformAssertions();
+
+it('can log some data in easy way', function () {
+    $logger = new NullLogger();
+    $metrics = ['time' => '123 ms'];
+
+    (new LogMessage(
+        PsrLogLevel::INFO,
+        'Cron task end successfully',
+        ['metrics' => $metrics],
+    ))->logByLogger($logger);
 })->expectNotToPerformAssertions();
