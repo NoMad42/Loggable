@@ -2,6 +2,11 @@
 
 All notable changes to `Loggable` will be documented in this file.
 
+## 0.2.1 - 2023-08-03
+
+- usage section rewritten for better clarity
+- also, some tests was added and rewritten
+
 ## 0.2.0 - 2023-08-01
 
 - added makeFromException helper method
